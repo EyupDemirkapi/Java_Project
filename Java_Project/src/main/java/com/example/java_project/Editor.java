@@ -37,7 +37,14 @@ public class Editor extends User implements IAnnouncer{
     }
 
     @Override
-    public void postAnnouncement(String title, String content) {
-        System.out.println("Editör Duyurusu: [" + title + "] - " + content);
+    public void postAnnouncement(Announcement announcement) {
+        System.out.println("Sistemde yayınlandı: " + announcement.getTitle());
+        // Burada DataStore içindeki duyuru listesine ekleme yapabilirsin
+    }
+
+    @Override
+    public void deleteAnnouncement(Announcement announcement) {
+        System.out.println("Sistemden silindi: " + announcement.getId());
+        // Burada DataStore içindeki duyuru listesinden silme yapabilirsin
     }
 }

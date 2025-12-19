@@ -1,74 +1,68 @@
 package com.example.java_project;
 
-import javafx.beans.property.*;
+import java.io.Serializable;
 
-public abstract class User {
-    // JavaFX TableView ve Binding işlemleri için Property kullanımı
-    private final StringProperty name = new SimpleStringProperty();
-    private final StringProperty surname = new SimpleStringProperty();
-    private final IntegerProperty id = new SimpleIntegerProperty();
-    private final StringProperty password = new SimpleStringProperty();
-    private final StringProperty department = new SimpleStringProperty();
-    private final IntegerProperty lastVisit = new SimpleIntegerProperty();
+public abstract class User implements Serializable {
+    // Versiyon kontrolü: Dosyadan okurken hata almamak için şart
+    private static final long serialVersionUID = 1L;
 
-    // Parametresiz Constructor
+    // Property yerine düz veri tipleri kullanıyoruz (Serileştirilebilir olması için)
+    private String name;
+    private String surname;
+    private int id;
+    private String password;
+    private String department;
+    private int lastVisit;
+
     public User() {}
 
-    // Parametreli Constructor
     public User(String name, String surname, int id, String password, String department) {
-        setName(name);
-        setSurname(surname);
-        this.id.set(id); // ID genelde constructor ile bir kez set edilir
-        setPassword(password);
-        setDepartment(department);
+        this.name = name;
+        this.surname = surname;
+        this.id = id;
+        setPassword(password); // Kontrol mekanizması için setter kullandık
+        this.department = department;
     }
 
-    // --- GETTER, SETTER ve PROPERTY METODLARI ---
+    // --- GETTER VE SETTER METODLARI ---
 
-    public String getName() { return name.get(); }
-    public void setName(String name) { this.name.set(name); }
-    public StringProperty nameProperty() { return name; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getSurname() { return surname.get(); }
-    public void setSurname(String surname) { this.surname.set(surname); }
-    public StringProperty surnameProperty() { return surname; }
+    public String getSurname() { return surname; }
+    public void setSurname(String surname) { this.surname = surname; }
 
-    public int getID() { return id.get(); }
-    // setID metodunu bilerek eklemedik (ID değişmez kabul edildi)
-    public IntegerProperty idProperty() { return id; }
+    public int getID() { return id; }
+    public void setID(int id) { this.id = id; }
 
-    public String getPassword() { return password.get(); }
+    public String getPassword() { return password; }
     public void setPassword(String password) {
-        // Güvenlik Kontrolü: Şifre en az 6 karakter olmalı
         if (password != null && password.length() >= 6) {
-            this.password.set(password);
+            this.password = password;
         } else {
-            System.out.println("Hata: Şifre en az 6 karakter olmalıdır!");
+            // Varsayılan bir şifre atayabilir veya hata fırlatabilirsin
+            this.password = "default123";
+            System.out.println("Hata: Şifre yetersiz, varsayılan atandı.");
         }
     }
-    public StringProperty passwordProperty() { return password; }
 
-    public String getDepartment() { return department.get(); }
-    public void setDepartment(String department) { this.department.set(department); }
-    public StringProperty departmentProperty() { return department; }
+    public String getDepartment() { return department; }
+    public void setDepartment(String department) { this.department = department; }
 
-    public int getLastVisit() { return lastVisit.get(); }
-    public void setLastVisit(int lastVisit) { this.lastVisit.set(lastVisit); }
-    public IntegerProperty lastVisitProperty() { return lastVisit; }
+    public int getLastVisit() { return lastVisit; }
+    public void setLastVisit(int lastVisit) { this.lastVisit = lastVisit; }
 
-    // --- toString METODU ---
-    // Konsolda nesneyi yazdırdığında anlamlı veri görmeni sağlar
-    @Override
-    public String toString() {
-        return "User{" +
-                "ID=" + getID() +
-                ", Ad='" + getName() + '\'' +
-                ", Soyad='" + getSurname() + '\'' +
-                ", Departman='" + getDepartment() + '\'' +
-                '}';
-    }
-    //Yorum yapma işlemi
+    // --- ORTAK METODLAR ---
+
     public void makeComment(String comment) {
         System.out.println(getName() + " yorum yaptı: " + comment);
+    }
+    public void deleteComment(String commentId) {
+        // Burada gerçek bir projede listeden ilgili ID'ye sahip yorumu sileriz
+        System.out.println("Yorum silindi. (ID: " + commentId + ") Silen: " + getName());
+    }
+    @Override
+    public String toString() {
+        return "User{ID=" + id + ", Ad='" + name + "', Departman='" + department + "'}";
     }
 }

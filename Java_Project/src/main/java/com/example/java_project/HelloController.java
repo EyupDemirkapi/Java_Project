@@ -12,6 +12,29 @@ public class HelloController {
     @FXML
     private Label welcomeText;
 
+    public void onDeleteClicked(User currentUser, Object itemToDelete) {
+        if (itemToDelete instanceof Comment) { // Eğer silinen bir yorum nesnesiyse
+            Comment selectedComment = (Comment) itemToDelete;
+
+            // Kullanıcı kendi yorumunu veya yetkiliyse başkasının yorumunu siliyor
+            DataStore.deleteComment(selectedComment);
+            System.out.println("Yorum silindi: " + selectedComment.getContent());
+        }
+        else if (itemToDelete instanceof Announcement) { // Eğer silinen bir duyuru nesnesiyse
+            if (currentUser instanceof IAnnouncer) {
+                Announcement selectedAnn = (Announcement) itemToDelete;
+
+                // IAnnouncer yetkisi olan kullanıcı duyuruyu siliyor
+                ((IAnnouncer) currentUser).deleteAnnouncement(selectedAnn);
+
+                // Merkezi veri deposundan ve dosyadan da siliyoruz
+                DataStore.deleteAnnouncement(selectedAnn);
+                System.out.println("Duyuru ve bağlı yorumlar silindi: " + selectedAnn.getTitle());
+            } else {
+                System.out.println("Hata: Duyuru silme yetkiniz yok!");
+            }
+        }
+    }
     @FXML
     protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to JavaFX Application!");
