@@ -7,8 +7,7 @@ import javafx.event.ActionEvent;
 import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.event.ActionEvent;
-import javafx.stage.Stage;
+
 public class HelloController {
     @FXML
     private Label welcomeText;

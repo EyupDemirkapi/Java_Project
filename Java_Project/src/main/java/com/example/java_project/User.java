@@ -2,7 +2,7 @@ package com.example.java_project;
 
 import javafx.beans.property.*;
 
-public class User {
+public abstract class User {
     // JavaFX TableView ve Binding işlemleri için Property kullanımı
     private final StringProperty name = new SimpleStringProperty();
     private final StringProperty surname = new SimpleStringProperty();
@@ -66,5 +66,9 @@ public class User {
                 ", Soyad='" + getSurname() + '\'' +
                 ", Departman='" + getDepartment() + '\'' +
                 '}';
+    }
+    //Yorum yapma işlemi
+    public void makeComment(String comment) {
+        System.out.println(getName() + " yorum yaptı: " + comment);
     }
 }
