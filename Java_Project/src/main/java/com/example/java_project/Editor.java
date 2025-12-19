@@ -1,50 +1,37 @@
 package com.example.java_project;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
-public class Editor extends User implements IAnnouncer{
-    // JavaFX TableView ve Binding işlemleri için Property kullanımı
-    private final StringProperty expertise = new SimpleStringProperty();
+public class Editor extends User implements IAnnouncer {
+    private String expertise; // StringProperty yerine düz String
 
     public Editor() {
         super();
     }
 
-    // Tam kapsamlı Constructor: Üst sınıfa (User) bilgileri gönderir
     public Editor(String name, String surname, int id, String password, String department, String expertise) {
-        super(name, surname, id, password, department);
-        setExpertise(expertise);
+        super(name, surname, id, password, department); //
+        this.expertise = expertise;
     }
 
-    // --- GETTER, SETTER ve PROPERTY METODLARI ---
-
-    public String getExpertise() {
-        return expertise.get();
-    }
-
-    public void setExpertise(String expertise) {
-        this.expertise.set(expertise);
-    }
-
-    public StringProperty expertiseProperty() {
-        return expertise;
-    }
-
-    @Override
-    public String toString() {
-        return super.toString() + " [Editör Uzmanlık: " + getExpertise() + "]";
-    }
+    // --- GETTER VE SETTER ---
+    public String getExpertise() { return expertise; }
+    public void setExpertise(String expertise) { this.expertise = expertise; }
 
     @Override
     public void postAnnouncement(Announcement announcement) {
-        System.out.println("Sistemde yayınlandı: " + announcement.getTitle());
-        // Burada DataStore içindeki duyuru listesine ekleme yapabilirsin
+        // Duyuruyu merkezi veri deposuna ekle
+        DataStore.addAnnouncement(announcement);
+        System.out.println("Editör " + getName() + " yeni bir duyuru yayınladı.");
     }
 
     @Override
     public void deleteAnnouncement(Announcement announcement) {
-        System.out.println("Sistemden silindi: " + announcement.getId());
-        // Burada DataStore içindeki duyuru listesinden silme yapabilirsin
+        // Duyuruyu merkezi veri deposundan sil
+        DataStore.deleteAnnouncement(announcement);
+        System.out.println("Editör " + getName() + " duyuruyu sildi: " + announcement.getTitle());
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " [Uzmanlık: " + expertise + "]";
     }
 }

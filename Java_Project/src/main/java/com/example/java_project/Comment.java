@@ -25,4 +25,13 @@ public class Comment implements Serializable {
     public String getId() { return id; }
     public String getContent() { return content; }
     public String getAuthorName() { return authorName; }
+    // Bu metodu Getters kısmına ekle
+    public String getAnnouncementId() {
+        return announcementId;
+    }
+
+    // Yorumun tarihini ekranda göstermek istersen bunu da ekleyebilirsin
+    public LocalDateTime getDate() {
+        return date;
+    }
 }

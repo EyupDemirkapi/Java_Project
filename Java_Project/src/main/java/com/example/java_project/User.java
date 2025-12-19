@@ -57,9 +57,10 @@ public abstract class User implements Serializable {
     public void makeComment(String comment) {
         System.out.println(getName() + " yorum yaptı: " + comment);
     }
-    public void deleteComment(String commentId) {
-        // Burada gerçek bir projede listeden ilgili ID'ye sahip yorumu sileriz
-        System.out.println("Yorum silindi. (ID: " + commentId + ") Silen: " + getName());
+    public void deleteComment(Comment comment) {
+        DataStore.comments.remove(comment);
+        DataStore.saveAll(); // Dosyayı güncelle
+        System.out.println(getName() + " isimli kullanıcı bir yorum sildi.");
     }
     @Override
     public String toString() {

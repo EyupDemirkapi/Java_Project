@@ -1,51 +1,38 @@
 package com.example.java_project;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 public class Teacher extends User implements IAnnouncer {
-    // JavaFX TableView ve Binding işlemleri için Property kullanımı
-    private final StringProperty expertise = new SimpleStringProperty();
+    // Serileştirme hatası almamak için düz String kullanıyoruz
+    private String expertise;
 
     public Teacher() {
         super();
     }
 
-    // Tam kapsamlı Constructor: Üst sınıfa (User) bilgileri gönderir
     public Teacher(String name, String surname, int id, String password, String department, String expertise) {
         super(name, surname, id, password, department);
-        setExpertise(expertise);
+        this.expertise = expertise;
     }
 
-    // --- GETTER, SETTER ve PROPERTY METODLARI ---
+    // --- GETTER VE SETTER ---
+    public String getExpertise() { return expertise; }
+    public void setExpertise(String expertise) { this.expertise = expertise; }
 
-    public String getExpertise() {
-        return expertise.get();
-    }
-
-    public void setExpertise(String expertise) {
-        this.expertise.set(expertise);
-    }
-
-    public StringProperty expertiseProperty() {
-        return expertise;
-    }
-
-    // Konsol çıktılarını anlamlı kılmak için toString metodunu eziyoruz (Override)
     @Override
     public String toString() {
-        return super.toString() + " [Uzmanlık: " + getExpertise() + "]";
+        return super.toString() + " [Hoca Uzmanlık: " + expertise + "]";
     }
 
     @Override
     public void postAnnouncement(Announcement announcement) {
-        System.out.println("Sistemde yayınlandı: " + announcement.getTitle());
-        // Burada DataStore içindeki duyuru listesine ekleme yapabilirsin
+        // Konsol çıktısı yerine gerçek işlev: Veriyi DataStore'a ekle
+        DataStore.addAnnouncement(announcement);
+        System.out.println("Hoca " + getName() + " duyuruyu paylaştı.");
     }
 
     @Override
     public void deleteAnnouncement(Announcement announcement) {
-        System.out.println("Sistemden silindi: " + announcement.getId());
-        // Burada DataStore içindeki duyuru listesinden silme yapabilirsin
+        // Konsol çıktısı yerine gerçek işlev: Veriyi DataStore'dan sil
+        DataStore.deleteAnnouncement(announcement);
+        System.out.println("Hoca " + getName() + " duyuruyu sildi.");
     }
 }

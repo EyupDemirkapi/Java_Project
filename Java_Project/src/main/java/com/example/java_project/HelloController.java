@@ -42,19 +42,20 @@ public class HelloController {
     @FXML
     protected void onLogoutButtonClick(ActionEvent event) {
         try {
-            // 1. hello-view.fxml dosyasını yükle
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
+            // 1. "hello-view.fxml" yerine "login-view.fxml" yüklenmeli
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("login-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 400, 300); // Giriş ekranı boyutu
 
-            // 2. Mevcut Stage'i (pencereyi) al
+            // 2. Mevcut pencereyi (Stage) al
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            // 3. Yeni sahneye geçiş yap
+            // 3. Sahneyi değiştir
             stage.setScene(scene);
-            stage.setTitle("Giriş Ekranı");
+            stage.setTitle("Duyuru Sistemi - Giriş");
             stage.show();
 
         } catch (IOException e) {
+            System.out.println("Giriş ekranı dosyası bulunamadı!");
             e.printStackTrace();
         }
     }

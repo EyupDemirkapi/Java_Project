@@ -5,22 +5,40 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 
 public class DataStore {
-    // Listelerimizi tanımlıyoruz
+    // Listeleri "public" ve "static" bırakıyoruz ki her yerden erişilsin
     public static final ObservableList<User> users = FXCollections.observableArrayList();
     public static final ObservableList<Announcement> announcements = FXCollections.observableArrayList();
     public static final ObservableList<Comment> comments = FXCollections.observableArrayList();
 
     static {
-        // Uygulama açıldığında tüm dosyaları yükle
+        users.addAll(FileHandler.loadList("users.dat"));
+
+        // Eğer dosya boşsa, test için bir hoca ekleyelim:
+        if(users.isEmpty()) {
+            users.add(new Teacher("Ahmet", "Hoca", 123, "123456", "Bilgisayar", "Prof. Dr."));
+            saveAll(); // Dosyaya kaydet
+        }
+
+        announcements.addAll(FileHandler.loadList("announcements.dat"));
+        comments.addAll(FileHandler.loadList("comments.dat"));
+        // Dosyalar varsa yükle, yoksa boş liste döndürür
         users.addAll(FileHandler.loadList("users.dat"));
         announcements.addAll(FileHandler.loadList("announcements.dat"));
         comments.addAll(FileHandler.loadList("comments.dat"));
     }
 
+
+    // LoginController içindeki kırmızılığı bu metot bitirir
+    public static ObservableList<User> getUsers() {
+        return users;
+    }
+
     // --- KULLANICI İŞLEMLERİ ---
     public static void addUser(User user) {
-        users.add(user);
-        saveAll(); // Her şey dahil kaydet
+        if (user != null) {
+            users.add(user);
+            saveAll();
+        }
     }
 
     // --- DUYURU İŞLEMLERİ ---
@@ -28,10 +46,9 @@ public class DataStore {
         announcements.add(ann);
         saveAll();
     }
-
     public static void deleteAnnouncement(Announcement ann) {
-        // Duyuru silindiğinde ona ait yorumları da temizlemek (Cascade Delete)
-        comments.removeIf(comment -> comment.getId().equals(ann.getId()));
+
+        comments.removeIf(comment -> comment.getAnnouncementId().equals(ann.getId()));
         announcements.remove(ann);
         saveAll();
     }
@@ -47,8 +64,8 @@ public class DataStore {
         saveAll();
     }
 
-    // Tüm listeleri dosyalara basan merkezi metod
-    private static void saveAll() {
+    // Merkezi Kayıt Metodu (Public yaptık)
+    public static void saveAll() {
         FileHandler.saveList("users.dat", new ArrayList<>(users));
         FileHandler.saveList("announcements.dat", new ArrayList<>(announcements));
         FileHandler.saveList("comments.dat", new ArrayList<>(comments));
