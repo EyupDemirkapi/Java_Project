@@ -17,7 +17,7 @@ public class announcement_process_automation extends Application {
 
         // 3. Başlığı giriş ekranına uygun şekilde güncelleyelim
         stage.setTitle("Duyuru Sistemi - Giriş");
-        stage.setResizable(false); // Giriş ekranının boyutunun değiştirilmesini engellemek şık durur
+        stage.setResizable(true); // Giriş ekranının boyutunun değiştirilmesini engellemek şık durur
         stage.setScene(scene);
         stage.show();
     }

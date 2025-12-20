@@ -10,28 +10,29 @@ public class Comment implements Serializable {
     private String id;
     private String content;
     private String authorName;
-    private String announcementId; // Hangi duyuruya yapıldığını bilmek için
+    private String announcementId;
     private LocalDateTime date;
+    private int authorId;
+    private String authorRole;
 
-    public Comment(String content, String authorName, String announcementId) {
+    // YENİ: chatController'daki 'new Comment(...)' satırı için constructor
+    public Comment(String content, String authorName, int authorId, String authorRole, String announcementId) {
         this.id = UUID.randomUUID().toString();
         this.content = content;
         this.authorName = authorName;
+        this.authorId = authorId;
+        this.authorRole = authorRole;
         this.announcementId = announcementId;
         this.date = LocalDateTime.now();
     }
 
-    // Getters
+    // Getters & Setters
     public String getId() { return id; }
     public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; } // Düzenleme için
     public String getAuthorName() { return authorName; }
-    // Bu metodu Getters kısmına ekle
-    public String getAnnouncementId() {
-        return announcementId;
-    }
-
-    // Yorumun tarihini ekranda göstermek istersen bunu da ekleyebilirsin
-    public LocalDateTime getDate() {
-        return date;
-    }
+    public String getAnnouncementId() { return announcementId; }
+    public LocalDateTime getDate() { return date; }
+    public String getAuthorRole() { return authorRole; } //
+    public int getAuthorId() { return authorId; } //
 }

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.example.java_project.DataStore.announcements;
+
 public class Classroom implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -27,9 +29,19 @@ public class Classroom implements Serializable {
     public String getTeacherId() { return teacherId; }
     public List<Integer> getStudentIds() { return studentIds; }
 
+
     public void addStudent(int studentId) {
         if (!studentIds.contains(studentId)) {
             studentIds.add(studentId);
         }
+    }
+    private List<Comment> comments = new ArrayList<>();
+
+    public List<Comment> getComments() {
+        return comments; // chatController refreshChat() için
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment); // chatController handleSendMessage() için
     }
 }

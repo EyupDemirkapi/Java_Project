@@ -66,4 +66,9 @@ public abstract class User implements Serializable {
     public String toString() {
         return "User{ID=" + id + ", Ad='" + name + "', Departman='" + department + "'}";
     }
+    public String getRole() {
+        if (this instanceof Teacher) return "Teacher";
+        if (this instanceof Editor) return "Editor";
+        return "Student";
+    }
 }

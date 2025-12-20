@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #2c3e50;"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.java_project.chatController">
+    <children>
+        <VBox spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Button onAction="#handleGoBack" text="← Geri" style="-fx-background-color: #7f8c8d; -fx-text-fill: white;" />
+                <Label fx:id="classNameLabel" text="Sınıf Duyuruları" textFill="#f1c40f">
+                    <font><Font name="System Bold" size="20.0" /></font>
+                </Label>
+            </HBox>
+
+            <HBox spacing="10.0">
+                <TextArea fx:id="messageArea" prefHeight="60.0" promptText="Bir duyuru veya yorum yazın..." HBox.hgrow="ALWAYS" wrapText="true" />
+                <Button onAction="#handleSendMessage" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #e67e22;" text="Gönder" textFill="WHITE" />
+            </HBox>
+
+            <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+                <content>
+                    <VBox fx:id="chatContainer" spacing="15.0" style="-fx-padding: 10;" />
+                </content>
+            </ScrollPane>
+        </VBox>
+    </children>
+</AnchorPane>

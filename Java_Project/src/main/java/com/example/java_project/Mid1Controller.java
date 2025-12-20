@@ -90,7 +90,29 @@ public class Mid1Controller {
     public void initialize() {
         classListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                System.out.println("Seçilen Sınıf: " + newVal);
+                try {
+                    // Seçilen sınıf isminden Classroom nesnesini bul
+                    Classroom selected = null;
+                    for (Classroom c : DataStore.classrooms) {
+                        if (newVal.contains(c.getClassId())) {
+                            selected = c;
+                            break;
+                        }
+                    }
+
+                    if (selected != null) {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("chat-view.fxml"));
+                        Parent root = loader.load();
+
+                        chatController controller = loader.getController();
+                        controller.setChatData(currentUser, selected);
+
+                        Stage stage = (Stage) classListView.getScene().getWindow();
+                        stage.setScene(new Scene(root));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
