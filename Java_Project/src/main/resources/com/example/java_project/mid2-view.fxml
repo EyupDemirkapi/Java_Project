@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="650.0" style="-fx-background-color: #2c3e50;"
-            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.java_project.Mid2Controller">
+<AnchorPane prefHeight="600.0" prefWidth="650.0" style="-fx-background-color: #2c3e50;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_project.Mid2Controller">
     <children>
-        <VBox layoutX="25.0" layoutY="20.0" spacing="15.0" prefWidth="600.0">
+        <VBox layoutX="25.0" layoutY="20.0" prefWidth="600.0" spacing="15.0">
             <Label text="Öğretmen Çalışma Alanı" textFill="#e67e22">
                 <font><Font name="System Bold" size="24.0" /></font>
             </Label>
 
             <HBox spacing="10.0">
-                <VBox spacing="5.0" HBox.hgrow="ALWAYS" style="-fx-background-color: #34495e; -fx-padding: 10; -fx-background-radius: 10;">
+                <VBox spacing="5.0" style="-fx-background-color: #34495e; -fx-padding: 10; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
                     <Label text="Yeni Sınıf Oluştur" textFill="WHITE" />
                     <TextField fx:id="newClassNameField" promptText="Sınıf Adı" />
-                    <Button onAction="#handleCreateClass" maxWidth="Infinity" style="-fx-background-color: #e67e22;" text="Sınıf Kur" textFill="WHITE" />
+                    <Button maxWidth="Infinity" onAction="#handleCreateClass" style="-fx-background-color: #e67e22;" text="Sınıf Kur" textFill="WHITE" />
                 </VBox>
-                <VBox spacing="5.0" HBox.hgrow="ALWAYS" style="-fx-background-color: #34495e; -fx-padding: 10; -fx-background-radius: 10;">
+                <VBox spacing="5.0" style="-fx-background-color: #34495e; -fx-padding: 10; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
                     <Label text="Bir Sınıfa Katıl" textFill="WHITE" />
                     <TextField fx:id="classCodeField" promptText="Sınıf Kodu" />
-                    <Button onAction="#handleJoinClass" maxWidth="Infinity" style="-fx-background-color: #27ae60;" text="Kodla Katıl" textFill="WHITE" />
+                    <Button maxWidth="Infinity" onAction="#handleJoinClass" style="-fx-background-color: #27ae60;" text="Kodla Katıl" textFill="WHITE" />
                 </VBox>
             </HBox>
 
-            <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" prefHeight="350.0">
+            <TabPane prefHeight="350.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                 <tabs>
                     <Tab text="Yönettiğim Sınıflar">
                         <ListView fx:id="myCreatedClassesListView" style="-fx-control-inner-background: #2c3e50; -fx-text-fill: white;" />
@@ -37,7 +42,7 @@
                 </tabs>
             </TabPane>
 
-            <Button onAction="#handleGoBack" text="Ana Menüye Dön" style="-fx-background-color: #7f8c8d;" textFill="WHITE" />
+            <Button onAction="#handleGoBack" style="-fx-background-color: #7f8c8d;" text="Ana Menüye Dön" textFill="WHITE" />
         </VBox>
     </children>
 </AnchorPane>

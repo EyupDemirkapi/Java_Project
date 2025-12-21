@@ -16,7 +16,12 @@ import java.io.IOException;
 public class LoginController {
     @FXML private TextField idField;
     @FXML private PasswordField passwordField;
-
+    @FXML private VBox loginPane;
+    @FXML private VBox signupPane;
+    @FXML private ComboBox<String> roleCombo;
+    @FXML private TextField newName;
+    @FXML private TextField newEmail;
+    @FXML private PasswordField newPass;
     @FXML
     private void handleLogin(ActionEvent event) {
         try {
@@ -45,21 +50,29 @@ public class LoginController {
     }
 
     private void switchToMainScene(ActionEvent event, User user) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("main-view.fxml"));
-        Parent root = loader.load();
+        // 1. Rol kontrolüne göre FXML dosyasını belirle
+        String targetFXML = user.getRole().equals("Teacher") ? "mid2-view.fxml" : "mid1-view.fxml";
 
-        // Veriyi diğer controller'a gönder
-        MainController mainController = loader.getController();
-        mainController.setUser(user);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(targetFXML));
+        Parent root = loader.load(); // ÖNCE yükle, sonra controller'a eriş
 
+        // 2. Controller'a veriyi güvenli bir şekilde aktar
+        if (user.getRole().equals("Teacher")) {
+            Mid2Controller controller = loader.getController();
+            controller.setUser(user); // Mid2Controller'da setUser metodun olmalı
+        } else {
+            Mid1Controller controller = loader.getController();
+            controller.setUser(user); // Mid1Controller'da setUser metodun olmalı
+        }
+
+        // 3. Sahneyi değiştir ve tam ekran yap
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
+        stage.setMaximized(true); // Ekranı kapla
         stage.show();
     }
     //devam
-    @FXML private VBox loginPane;
-    @FXML private VBox signupPane;
-    @FXML private ComboBox<String> roleCombo;
+
 
     @FXML
     public void initialize() {
@@ -84,9 +97,7 @@ public class LoginController {
         loginPane.setVisible(true);
         loginPane.setManaged(true);
     }
-    @FXML private TextField newName;
-    @FXML private TextField newEmail;
-    @FXML private PasswordField newPass;
+
     @FXML
     private void processSignUp() {
         try {

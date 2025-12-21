@@ -28,7 +28,6 @@ public class DataStore {
     }
 
 
-    // LoginController içindeki kırmızılığı bu metot bitirir
     public static ObservableList<User> getUsers() {
         return users;
     }

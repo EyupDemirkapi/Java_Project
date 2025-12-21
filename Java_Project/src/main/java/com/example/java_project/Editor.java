@@ -1,7 +1,7 @@
 package com.example.java_project;
 
 public class Editor extends User implements IAnnouncer {
-    private String expertise; // StringProperty yerine düz String
+    private String expertise;
 
     public Editor() {
         super();

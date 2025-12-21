@@ -14,7 +14,7 @@ public class Classroom implements Serializable {
     private String className;
     private String teacherId; // Sınıfı oluşturan hocanın ID'si
     private List<Integer> studentIds; // Sınıfa katılan öğrencilerin/editörlerin listesi
-
+    private List<Comment> comments = new ArrayList<>();
     public Classroom(String className, String teacherId) {
         this.className = className;
         this.teacherId = teacherId;
@@ -35,7 +35,7 @@ public class Classroom implements Serializable {
             studentIds.add(studentId);
         }
     }
-    private List<Comment> comments = new ArrayList<>();
+
 
     public List<Comment> getComments() {
         return comments; // chatController refreshChat() için
