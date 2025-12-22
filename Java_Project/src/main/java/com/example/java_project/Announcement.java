@@ -24,9 +24,9 @@ public class Announcement implements Serializable {
     // GETTER METODLARI
     public String getId() { return id; }
     public String getTitle() { return title; }
-    public String getContent() { return content; }
-    public String getAuthorName() { return authorName; }
-    public LocalDateTime getDate() { return date; }
+    public String getsomeContent() { return content; }
+    public String getsomeAuthorName() { return authorName; }
+    public LocalDateTime getsomeDate() { return date; }
 
     @Override
     public String toString() {

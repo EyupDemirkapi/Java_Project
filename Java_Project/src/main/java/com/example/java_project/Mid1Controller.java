@@ -69,23 +69,26 @@ public class Mid1Controller {
     }
 
     @FXML
-    public void handleGoBack(ActionEvent event) { // Parametre artık doğru (javafx)
+    public void handleGoBack(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-view.fxml"));
+            // "main-view.fxml" yerine "login-view.fxml" (veya senin ana giriş dosyanın adı) olmalı
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login-view.fxml"));
             Parent root = loader.load();
 
-            MainController mainController = loader.getController();
-            mainController.setUser(currentUser);
-
+            // Mevcut pencereyi (Stage) al
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+
+            // Yeni sahneyi set et ve göster
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.centerOnScreen(); // Pencereyi ortalar
             stage.show();
 
         } catch (IOException e) {
-            System.out.println("Geri dönüş hatası: " + e.getMessage());
+            System.err.println("Geri dönüş hatası: FXML dosyası bulunamadı! " + e.getMessage());
+            e.printStackTrace();
         }
     }
-
     @FXML
     public void initialize() {
         classListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {

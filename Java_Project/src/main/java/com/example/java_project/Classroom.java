@@ -9,7 +9,7 @@ import static com.example.java_project.DataStore.announcements;
 
 public class Classroom implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    private List<Announcement> announcements = new ArrayList<>();
     private String classId; // Öğrencinin gireceği kısa kod (Örn: "MATH101")
     private String className;
     private String teacherId; // Sınıfı oluşturan hocanın ID'si
@@ -22,7 +22,18 @@ public class Classroom implements Serializable {
         this.classId = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
         this.studentIds = new ArrayList<>();
     }
-
+    public void addAnnouncement(Announcement ann) {
+        if (announcements == null) {
+            announcements = new ArrayList<>();
+        }
+        this.announcements.add(ann);
+    }
+    public List<Announcement> getAnnouncements() {
+        if (announcements == null) {
+            announcements = new ArrayList<>();
+        }
+        return announcements;
+    }
     // Getters
     public String getClassId() { return classId; }
     public String getClassName() { return className; }
