@@ -100,15 +100,30 @@ public class chatController {
 
         if (msgObj instanceof Announcement) {
             Announcement ann = (Announcement) msgObj;
-            // SENİN METODLARININ BİZZAT KULLANILDIĞI YER:
             detailText = "TİP: RESMİ DUYURU\n" +
                     "YAZAR: " + ann.getsomeAuthorName() + "\n" +
                     "ZAMAN: " + ann.getsomeDate().format(dtf) + "\n" +
                     "İÇERİK: " + ann.getsomeContent();
         } else {
             Comment comm = (Comment) msgObj;
+
+            // --- AKADEMİK YIL BİLGİSİNİ ÇEKME MANTIĞI ---
+            String academicYear = "Bilinmiyor";
+            for (User u : DataStore.users) {
+                // Comment içindeki yazar ID'si ile DataStore'daki kullanıcıyı eşleştiriyoruz
+                if (u.getID() == comm.getAuthorId()) {
+                    if (u instanceof Student) {
+                        // Eğer kullanıcı Student tipindeyse metodunu çağırıyoruz
+                        academicYear = ((Student) u).getAcademicYear();
+                    }
+                    break;
+                }
+            }
+            // --------------------------------------------
+
             detailText = "TİP: ÖĞRENCİ YORUMU\n" +
                     "YAZAR: " + comm.getAuthorName() + "\n" +
+                    "AKADEMİK YIL: " + academicYear + "\n" + // Yeni eklenen satır
                     "ZAMAN: " + comm.getDate().format(dtf) + "\n" +
                     "İÇERİK: " + comm.getContent();
         }

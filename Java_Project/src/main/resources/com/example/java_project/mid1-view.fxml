@@ -4,28 +4,39 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="600.0" style="-fx-background-color: #2c3e50;"
+<AnchorPane prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #2c3e50;"
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.java_project.Mid1Controller">
     <children>
-        <VBox layoutX="30.0" layoutY="20.0" spacing="15.0" prefWidth="540.0">
-            <Label text="Sınıflarım" textFill="#f1c40f">
+        <VBox layoutX="30.0" layoutY="20.0" spacing="15.0" prefWidth="540.0" AnchorPane.topAnchor="20.0" AnchorPane.bottomAnchor="20.0">
+            <Label text="Öğrenci Paneli" textFill="#f1c40f">
                 <font><Font name="System Bold" size="22.0" /></font>
             </Label>
 
-            <ListView fx:id="classListView" prefHeight="300.0"
-                      style="-fx-background-color: #34495e; -fx-control-inner-background: #34495e; -fx-text-fill: white;" />
-
-            <Separator prefWidth="200.0" />
-
-            <HBox spacing="10.0" alignment="CENTER_LEFT">
-                <TextField fx:id="classCodeField" promptText="Sınıf Kodu (Örn: A1B2C3)"
-                           prefWidth="350.0" style="-fx-background-color: white; -fx-background-radius: 5;" />
-                <Button onAction="#handleJoinClass" text="Sınıfa Katıl"
+            <HBox spacing="10.0" alignment="CENTER_LEFT" style="-fx-background-color: #34495e; -fx-padding: 10; -fx-background-radius: 5;">
+                <Label text="Akademik Yıl:" textFill="WHITE" />
+                <ComboBox fx:id="academicYearCombo" promptText="Sınıf Seçiniz" prefWidth="150.0" />
+                <Button onAction="#handleUpdateAcademicYear" text="Bilgiyi Güncelle"
                         style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
             </HBox>
 
-            <Button onAction="#handleGoBack" text="Geri Dön"
+            <Separator prefWidth="200.0" />
+
+            <Label text="Sınıflarım" textFill="#f1c40f">
+                <font><Font name="System Bold" size="18.0" /></font>
+            </Label>
+
+            <ListView fx:id="classListView" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: #34495e; -fx-control-inner-background: #34495e; -fx-text-fill: white;" />
+
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <TextField fx:id="classCodeField" promptText="Sınıf Kodu (Örn: A1B2C3)"
+                           HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 5;" />
+                <Button onAction="#handleJoinClass" text="Sınıfa Katıl"
+                        style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
+            </HBox>
+
+            <Button onAction="#handleGoBack" text="← Geri Dön"
                     style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-cursor: hand;" />
         </VBox>
     </children>

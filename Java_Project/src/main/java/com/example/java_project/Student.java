@@ -13,15 +13,14 @@ public class Student extends User {
         this.academicYear = academicYear;
     }
 
-    // --- GETTER VE SETTER ---
     public String getAcademicYear() {
-        return academicYear;
+        return academicYear != null ? academicYear : "Belirtilmemiş";
     }
 
+    // Setter
     public void setAcademicYear(String academicYear) {
         this.academicYear = academicYear;
     }
-
     @Override
     public String toString() {
         return super.toString() + " [Sınıf: " + academicYear + "]";
