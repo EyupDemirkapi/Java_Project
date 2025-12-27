@@ -11,7 +11,10 @@ public class Editor extends User implements IAnnouncer {
         super(name, surname, id, password, department); //
         this.expertise = expertise;
     }
-
+    @Override
+    public String getRole() {
+        return "Editor";
+    }
     // --- GETTER VE SETTER ---
     public String getExpertise() { return expertise; }
     public void setExpertise(String expertise) { this.expertise = expertise; }

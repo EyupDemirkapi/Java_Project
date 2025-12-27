@@ -1,65 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Hyperlink?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="550.0" prefWidth="437.0" style="-fx-background-color: #2c3e50; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_project.LoginController">
-
+<AnchorPane prefHeight="550.0" prefWidth="437.0" style="-fx-background-color: #121212; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_project.LoginController">
     <children>
-        <VBox alignment="CENTER" layoutY="30.0" prefWidth="400.0" spacing="10">
-            <Label text="WELCOME" textFill="#e67e22">
+        <VBox alignment="CENTER" layoutY="30.0" prefWidth="437.0" spacing="10">
+            <Label text="WELCOME" textFill="#bb86fc">
                 <font><Font name="System Bold" size="24.0" /></font>
             </Label>
-            <Label style="-fx-font-size: 80; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 5);" text="E" textFill="#f1c40f" />
+            <Label style="-fx-font-size: 80; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 5);" text="E" textFill="#03dac6" />
         </VBox>
 
-        <StackPane layoutX="50.0" layoutY="180.0" prefWidth="300.0">
-
+        <StackPane layoutX="68.0" layoutY="180.0" prefWidth="300.0">
             <VBox fx:id="loginPane" spacing="20.0">
                 <children>
-                    <TextField fx:id="idField" promptText="User ID" style="-fx-background-color: transparent; -fx-border-color: #7f8c8d; -fx-border-width: 0 0 1 0; -fx-text-fill: white;" />
-                    <PasswordField fx:id="passwordField" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: #7f8c8d; -fx-border-width: 0 0 1 0; -fx-text-fill: white;" />
-
+                    <TextField fx:id="idField" promptText="User ID" style="-fx-background-color: transparent; -fx-border-color: #37474f; -fx-border-width: 0 0 1 0; -fx-text-fill: white;" />
+                    <PasswordField fx:id="passwordField" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: #37474f; -fx-border-width: 0 0 1 0; -fx-text-fill: white;" />
                     <HBox alignment="CENTER_LEFT" spacing="10">
-                        <CheckBox style="-fx-font-size: 11;" text="Remember me" textFill="#bdc3c7" />
+                        <CheckBox style="-fx-font-size: 11;" text="Remember me" textFill="#888888" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Hyperlink style="-fx-font-size: 11;" text="Forgot Password?" textFill="#bdc3c7" />
+                        <Hyperlink style="-fx-font-size: 11;" text="Forgot Password?" textFill="#bb86fc" />
                     </HBox>
-
-                    <Button onAction="#handleLogin" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #A69B8F; -fx-background-radius: 10; -fx-cursor: hand;" text="Login" textFill="WHITE">
-                        <font><Font name="System Bold" size="14.0" /></font>
-                    </Button>
-                    <Button onAction="#showSignUp" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-color: #7f8c8d; -fx-border-radius: 10; -fx-cursor: hand;" text="Sign Up" textFill="WHITE" />
+                    <Button onAction="#handleLogin" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #bb86fc; -fx-background-radius: 10; -fx-cursor: hand; -fx-text-fill: black; -fx-font-weight: bold;" text="Login" />
+                    <Button onAction="#showSignUp" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-color: #bb86fc; -fx-border-radius: 10; -fx-cursor: hand;" text="Sign Up" textFill="#bb86fc" />
                 </children>
             </VBox>
 
             <VBox fx:id="signupPane" managed="false" spacing="15.0" visible="false">
                 <children>
-                    <TextField id="newName" fx:id="newName" promptText="Full Name" style="-fx-background-color: transparent; -fx-border-color: #7f8c8d; -fx-border-width: 0 0 1 0; -fx-text-fill: white;" />
-                    <TextField fx:id="newEmail" promptText="Email Address" style="-fx-background-color: transparent; -fx-border-color: #7f8c8d; -fx-border-width: 0 0 1 0; -fx-text-fill: white;" />
-                    <PasswordField fx:id="newPass" prefHeight="26.0" prefWidth="53.0" promptText="New Password" style="-fx-background-color: transparent; -fx-border-color: #7f8c8d; -fx-border-width: 0 0 1 0; -fx-text-fill: white;" />
-
-                    <ComboBox fx:id="roleCombo" prefWidth="300.0" promptText="Select Role" style="-fx-background-color: #34495e; -fx-text-fill: white; -fx-border-color: #7f8c8d;" />
-
-                    <Button onAction="#processSignUp" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #e67e22; -fx-background-radius: 10; -fx-cursor: hand;" text="Register" textFill="WHITE">
-                        <font><Font name="System Bold" size="14.0" /></font>
-                    </Button>
-                    <Button onAction="#showLogin" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-color: #7f8c8d; -fx-border-radius: 10; -fx-cursor: hand;" text="Back to Login" textFill="WHITE" />
+                    <TextField fx:id="newName" promptText="Full Name" style="-fx-background-color: transparent; -fx-border-color: #37474f; -fx-border-width: 0 0 1 0; -fx-text-fill: white;" />
+                    <TextField fx:id="newEmail" promptText="Email Address" style="-fx-background-color: transparent; -fx-border-color: #37474f; -fx-border-width: 0 0 1 0; -fx-text-fill: white;" />
+                    <PasswordField fx:id="newPass" promptText="New Password" style="-fx-background-color: transparent; -fx-border-color: #37474f; -fx-border-width: 0 0 1 0; -fx-text-fill: white;" />
+                    <ComboBox fx:id="roleCombo" prefWidth="300.0" style="-fx-background-color: #1e1e1e; -fx-text-fill: white; -fx-border-color: #37474f;" />
+                    <Button onAction="#processSignUp" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #03dac6; -fx-background-radius: 10; -fx-cursor: hand; -fx-text-fill: black; -fx-font-weight: bold;" text="Register" />
+                    <Button onAction="#showLogin" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-color: #03dac6; -fx-border-radius: 10; -fx-cursor: hand;" text="Back to Login" textFill="#03dac6" />
                 </children>
             </VBox>
         </StackPane>
-
-        <Label layoutX="185.0" layoutY="510.0" style="-fx-cursor: hand;" text="Help" textFill="#7f8c8d" underline="true" />
+        <Label layoutX="203.0" layoutY="510.0" style="-fx-cursor: hand;" text="Help" textFill="#888888" underline="true" />
     </children>
 </AnchorPane>

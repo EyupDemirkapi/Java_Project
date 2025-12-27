@@ -104,9 +104,10 @@ public class LoginController {
             String name = newName.getText();
             String email = newEmail.getText();
             String password = newPass.getText();
-            String role = roleCombo.getValue(); // ComboBox'tan seçilen rol
+            String role = roleCombo.getValue(); // ComboBox'tan seçilen değer: "Student", "Teacher", "Editor"
 
-            if (name.isEmpty() || role == null) {
+            // Boş alan kontrolü
+            if (name.isEmpty() || role == null || password.isEmpty()) {
                 System.out.println("Hata: Lütfen tüm alanları doldurun!");
                 return;
             }
@@ -115,24 +116,38 @@ public class LoginController {
             int newId = (int) (Math.random() * 9000) + 1000;
 
             User newUser;
-            if (role.equals("Teacher")) {
-                newUser = new Teacher(name, "", newId, password, "Genel", "Uzman");
-            } else {
-                newUser = new Student(name, "", newId, password, "Genel", "1. Sınıf");
+
+            // --- DOĞRU NESNE OLUŞTURMA MANTIGI ---
+            // User sınıfındaki getRole() metodu instanceof kullandığı için
+            // burada doğru sınıfı (Editor) çağırmak yetki için yeterlidir.
+            if ("Teacher".equals(role)) {
+                newUser = new Teacher(name, email, newId, password, "Genel", "Uzman");
+            }
+            else if ("Editor".equals(role)) {
+                // HATA GİDERİLDİ: newUser.setRole satırı silindi, nesne direkt Editor olarak oluşturuldu
+                newUser = new Editor(name, email, newId, password, "Genel", "Moderasyon");
+            }
+            else {
+                // Geri kalan her durum (Student seçimi dahil) öğrenci oluşturur
+                newUser = new Student(name, email, newId, password, "Genel", "1. Sınıf");
             }
 
-            // DataStore'a ekle ve kaydet
+            // Veriyi listeye ekle ve dosyaya kaydet
             DataStore.addUser(newUser);
+            DataStore.saveAll();
 
+            // Kullanıcıya bilgi ver
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
             alert.setTitle("Kayıt Başarılı");
             alert.setHeaderText("Giriş Bilgileriniz");
             alert.setContentText("Kayıt tamamlandı! Giriş ID'niz: " + newId + "\nLütfen bu ID'yi not alın.");
             alert.showAndWait();
-            showLogin(); // Kullanıcıyı tekrar giriş ekranına gönder
+
+            showLogin(); // Giriş ekranına geri dön
 
         } catch (Exception e) {
-            System.out.println("Kayıt sırasında bir hata oluştu.");
+            System.out.println("Kayıt sırasında bir hata oluştu: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

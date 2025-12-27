@@ -16,7 +16,7 @@ import java.io.IOException;
 public class Mid1Controller {
     @FXML private ListView<String> classListView;
     @FXML private TextField classCodeField;
-    @FXML private ComboBox<String> academicYearCombo; // Yeni ComboBox
+    @FXML private ComboBox<String> academicYearCombo;
 
     private User currentUser;
 
@@ -26,6 +26,30 @@ public class Mid1Controller {
         academicYearCombo.setItems(FXCollections.observableArrayList(
                 "Hazırlık", "1. Sınıf", "2. Sınıf", "3. Sınıf", "4. Sınıf", "Mezun"
         ));
+
+        // --- TEMA GÜNCELLEMESİ: ComboBox'ı Turkuaz ve Açık Renk Yapma ---
+        academicYearCombo.setStyle(
+                "-fx-background-color: #03dac6; " +  // Butonla aynı turkuaz renk
+                        "-fx-text-fill: black; " +           // Seçili metin siyah
+                        "-fx-font-weight: bold; " +          // Kalın yazı
+                        "-fx-background-radius: 5; " +       // Köşe yumuşatma
+                        "-fx-cursor: hand;"                  // El imleci
+        );
+
+        // Açılır menüdeki yazıların siyah ve okunaklı olması için cell factory ekliyoruz
+        academicYearCombo.setButtonCell(new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item);
+                    setTextFill(javafx.scene.paint.Color.BLACK);
+                    setStyle("-fx-font-weight: bold;");
+                }
+            }
+        });
 
         // 2. Sınıf Listesi Tıklama Listener'ı
         classListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
@@ -66,7 +90,6 @@ public class Mid1Controller {
         this.currentUser = user;
         refreshClassList();
 
-        // Kullanıcı yüklendiğinde mevcut akademik yılını seçili getir
         if (currentUser instanceof Student) {
             academicYearCombo.setValue(((Student) currentUser).getAcademicYear());
         }
@@ -76,10 +99,7 @@ public class Mid1Controller {
     private void handleUpdateAcademicYear() {
         String selectedYear = academicYearCombo.getValue();
         if (selectedYear != null && currentUser instanceof Student) {
-            // Nesneyi güncelle
             ((Student) currentUser).setAcademicYear(selectedYear);
-
-            // Veriyi kalıcı olarak kaydet
             DataStore.saveAll();
             showAlert("Başarılı", "Akademik yılınız güncellendi: " + selectedYear);
         } else {
