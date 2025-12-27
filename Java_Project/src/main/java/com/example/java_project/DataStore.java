@@ -52,16 +52,8 @@ public class DataStore {
         saveAll();
     }
 
-    // --- YORUM İŞLEMLERİ ---
-    public static void addComment(Comment comment) {
-        comments.add(comment);
-        saveAll();
-    }
 
-    public static void deleteComment(Comment comment) {
-        comments.remove(comment);
-        saveAll();
-    }
+
 
     // Merkezi Kayıt Metodu (Public yaptık)
     public static void saveAll() {

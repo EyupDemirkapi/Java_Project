@@ -12,7 +12,7 @@ public abstract class User implements Serializable {
     private int id;
     private String password;
     private String department;
-    private int lastVisit;
+    private long lastVisit;
 
     public User() {}
 
@@ -49,8 +49,8 @@ public abstract class User implements Serializable {
     public String getDepartment() { return department; }
     public void setDepartment(String department) { this.department = department; }
 
-    public int getLastVisit() { return lastVisit; }
-    public void setLastVisit(int lastVisit) { this.lastVisit = lastVisit; }
+    public long getLastVisit() { return lastVisit; }
+    public void setLastVisit(long lastVisit) { this.lastVisit = lastVisit; }
 
     // --- ORTAK METODLAR ---
 

@@ -17,7 +17,7 @@ public class HelloController {
             Comment selectedComment = (Comment) itemToDelete;
 
             // Kullanıcı kendi yorumunu veya yetkiliyse başkasının yorumunu siliyor
-            DataStore.deleteComment(selectedComment);
+
             System.out.println("Yorum silindi: " + selectedComment.getContent());
         }
         else if (itemToDelete instanceof Announcement) { // Eğer silinen bir duyuru nesnesiyse

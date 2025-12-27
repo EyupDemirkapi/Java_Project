@@ -1,5 +1,6 @@
 package com.example.java_project;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,12 +12,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class chatController {
     @FXML private VBox chatContainer;
     @FXML private TextArea messageArea;
     @FXML private Label classNameLabel;
+    @FXML private ScrollPane chatScrollPane;
 
     private User currentUser;
     private Classroom currentClass;
@@ -25,21 +31,41 @@ public class chatController {
         this.currentUser = user;
         this.currentClass = classroom;
         classNameLabel.setText(classroom.getClassName());
+
+        // Kullanıcı girişiyle LastVisit güncelle (User'da long olmalı)
+        currentUser.setLastVisit(System.currentTimeMillis());
+        DataStore.saveAll();
+
         refreshChat();
     }
 
+    /**
+     * Tüm mesajları kronolojik (zamana göre) sıraya koyar ve ekrana basar.
+     * Bu sayede duyurular ve yorumlar karışık ve en yeni en altta olacak şekilde görünür.
+     */
     private void refreshChat() {
         chatContainer.getChildren().clear();
 
-        // 1. Önce Duyuruları (Announcement) ekleyelim (Senin özel metodlarını kullanacak olanlar)
-        for (Announcement ann : currentClass.getAnnouncements()) {
-            addMessageBubble(ann);
+        // 1. Tüm mesajları tek bir listede birleştir
+        List<Object> allMessages = new ArrayList<>();
+        allMessages.addAll(currentClass.getAnnouncements());
+        allMessages.addAll(currentClass.getComments());
+
+        // 2. Mesajları tarihlerine göre sırala (Eskiden Yeniye)
+        allMessages.sort((o1, o2) -> {
+            LocalDateTime date1 = (o1 instanceof Announcement) ?
+                    ((Announcement) o1).getsomeDate() : ((Comment) o1).getDate();
+            LocalDateTime date2 = (o2 instanceof Announcement) ?
+                    ((Announcement) o2).getsomeDate() : ((Comment) o2).getDate();
+            return date1.compareTo(date2);
+        });
+
+        // 3. Sıralı listeyi ekrana bas
+        for (Object msg : allMessages) {
+            addMessageBubble(msg);
         }
 
-        // 2. Sonra Normal Yorumları (Comment) ekleyelim
-        for (Comment comm : currentClass.getComments()) {
-            addMessageBubble(comm);
-        }
+        scrollToBottom();
     }
 
     private void addMessageBubble(Object msgObj) {
@@ -48,19 +74,18 @@ public class chatController {
 
         String displayAuthor, displayContent, displayRole;
 
-        // --- BURADA SENİN ÖZEL METODLARINI DEVREYE SOKUYORUZ ---
         if (msgObj instanceof Announcement) {
             Announcement ann = (Announcement) msgObj;
-            displayAuthor = ann.getsomeAuthorName(); // SENİN METODUN
-            displayContent = ann.getsomeContent();   // SENİN METODUN
+            displayAuthor = ann.getsomeAuthorName();
+            displayContent = ann.getsomeContent();
             displayRole = "DUYURU";
-            bubble.setStyle(bubble.getStyle() + "-fx-background-color: #e67e22;"); // Duyurular Turuncu
+            bubble.setStyle(bubble.getStyle() + "-fx-background-color: #e67e22;"); // Turuncu
         } else {
             Comment comm = (Comment) msgObj;
             displayAuthor = comm.getAuthorName();
             displayContent = comm.getContent();
             displayRole = comm.getAuthorRole();
-            bubble.setStyle(bubble.getStyle() + "-fx-background-color: #34495e;"); // Yorumlar Mavi
+            bubble.setStyle(bubble.getStyle() + "-fx-background-color: #34495e;"); // Mavi
         }
 
         Label header = new Label(displayAuthor + " [" + displayRole + "]");
@@ -73,76 +98,17 @@ public class chatController {
 
         bubble.getChildren().addAll(header, content);
 
-        // --- SAĞ TIK MENÜSÜ (ÖZEL METODLARI KULLANAN KISIM) ---
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem infoItem = new MenuItem("Detayları Görüntüle");
+        // Çift Tıklama Olayı
+        bubble.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                handleMessageAction(msgObj);
+            }
+        });
 
-        infoItem.setOnAction(e -> showDetailAlert(msgObj));
-        contextMenu.getItems().add(infoItem);
-
-        bubble.setOnContextMenuRequested(e ->
-                contextMenu.show(bubble, e.getScreenX(), e.getScreenY())
-        );
-
-        // Düzenleme Yetkisi (Sadece Comment'ler için veya Duyuru sahibi için)
         checkPermissionsAndAddEditButton(bubble, msgObj);
 
-        chatContainer.getChildren().add(0, bubble);
-    }
-
-    private void showDetailAlert(Object msgObj) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Sistem Bilgisi");
-        alert.setHeaderText("Gönderi Detaylı Verisi");
-
-        String detailText;
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-
-        if (msgObj instanceof Announcement) {
-            Announcement ann = (Announcement) msgObj;
-            detailText = "TİP: RESMİ DUYURU\n" +
-                    "YAZAR: " + ann.getsomeAuthorName() + "\n" +
-                    "ZAMAN: " + ann.getsomeDate().format(dtf) + "\n" +
-                    "İÇERİK: " + ann.getsomeContent();
-        } else {
-            Comment comm = (Comment) msgObj;
-
-            // --- AKADEMİK YIL BİLGİSİNİ ÇEKME MANTIĞI ---
-            String academicYear = "Bilinmiyor";
-            for (User u : DataStore.users) {
-                // Comment içindeki yazar ID'si ile DataStore'daki kullanıcıyı eşleştiriyoruz
-                if (u.getID() == comm.getAuthorId()) {
-                    if (u instanceof Student) {
-                        // Eğer kullanıcı Student tipindeyse metodunu çağırıyoruz
-                        academicYear = ((Student) u).getAcademicYear();
-                    }
-                    break;
-                }
-            }
-            // --------------------------------------------
-
-            detailText = "TİP: ÖĞRENCİ YORUMU\n" +
-                    "YAZAR: " + comm.getAuthorName() + "\n" +
-                    "AKADEMİK YIL: " + academicYear + "\n" + // Yeni eklenen satır
-                    "ZAMAN: " + comm.getDate().format(dtf) + "\n" +
-                    "İÇERİK: " + comm.getContent();
-        }
-
-        alert.setContentText(detailText);
-        alert.showAndWait();
-    }
-
-    private void checkPermissionsAndAddEditButton(VBox bubble, Object msgObj) {
-        // Sadece Comment nesneleri düzenlenebilir varsayıyoruz
-        if (msgObj instanceof Comment) {
-            Comment comm = (Comment) msgObj;
-            if (currentUser.getRole().equals("Editor") || comm.getAuthorId() == currentUser.getID()) {
-                Button editBtn = new Button("Düzenle");
-                editBtn.setStyle("-fx-font-size: 9; -fx-background-color: #7f8c8d;");
-                editBtn.setOnAction(e -> openEditDialog(comm));
-                bubble.getChildren().add(editBtn);
-            }
-        }
+        // Mesajı listenin en sonuna ekle (Aşağı doğru akış)
+        chatContainer.getChildren().add(bubble);
     }
 
     @FXML
@@ -150,26 +116,101 @@ public class chatController {
         String msg = messageArea.getText().trim();
         if (msg.isEmpty()) return;
 
-        // KONTROL: Eğer kullanıcı Teacher (Hoca) veya Editor ise Duyuru oluştur
-        if (currentUser.getRole().equals("Teacher") || currentUser.getRole().equals("Editor")) {
-            // Senin Announcement sınıfındaki constructor'a göre: title, content, authorName
-            Announcement newAnn = new Announcement("Sınıf Duyurusu", msg, currentUser.getName());
-            currentClass.addAnnouncement(newAnn); // Classroom'a duyuru olarak ekle
+        // Hoca/Editör '!' ile başlıyorsa Duyuru, aksi halde Yorum yapar
+        if (msg.startsWith("!") && (currentUser.getRole().equals("Teacher") || currentUser.getRole().equals("Editor"))) {
+            String cleanMsg = msg.substring(1).trim();
+            Announcement newAnn = new Announcement("Sınıf Duyurusu", cleanMsg, currentUser.getName());
+            currentClass.addAnnouncement(newAnn);
         } else {
-            // Öğrenci ise normal Yorum (Comment) oluştur
             Comment newComm = new Comment(msg, currentUser.getName(), currentUser.getID(), currentUser.getRole(), currentClass.getClassId());
             currentClass.addComment(newComm);
         }
 
         DataStore.saveAll();
         messageArea.clear();
-        refreshChat(); // Listeyi yenileyince artık hocanınki turuncu, öğrencininki mavi görünecek
+        refreshChat();
+    }
+
+    private void handleMessageAction(Object msgObj) {
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Detayları Gör", "Detayları Gör", "Mesajı Sil");
+        dialog.setTitle("Mesaj İşlemleri");
+        dialog.setHeaderText("İşlem Seçin");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(choice -> {
+            if (choice.equals("Detayları Gör")) {
+                showDetailAlert(msgObj);
+            } else if (choice.equals("Mesajı Sil")) {
+                confirmAndDelete(msgObj);
+            }
+        });
+    }
+
+    private void confirmAndDelete(Object msgObj) {
+        boolean canDelete = false;
+        if (msgObj instanceof Comment) {
+            Comment c = (Comment) msgObj;
+            if (currentUser.getID() == c.getAuthorId() || currentUser.getRole().equals("Editor")) canDelete = true;
+        } else if (msgObj instanceof Announcement) {
+            if (currentUser.getRole().equals("Teacher") || currentUser.getRole().equals("Editor")) canDelete = true;
+        }
+
+        if (!canDelete) {
+            new Alert(Alert.AlertType.ERROR, "Yetkiniz yok!").show();
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Silinsin mi?", ButtonType.YES, ButtonType.NO);
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                if (msgObj instanceof Comment) {
+                    currentClass.deleteComment((Comment) msgObj, currentUser);
+                } else {
+                    currentClass.getAnnouncements().remove((Announcement) msgObj);
+                }
+                DataStore.saveAll();
+                refreshChat();
+            }
+        });
+    }
+
+    private void scrollToBottom() {
+        Platform.runLater(() -> {
+            if (chatScrollPane != null) {
+                chatScrollPane.setVvalue(1.0);
+            }
+        });
+    }
+
+    private void showDetailAlert(Object msgObj) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Sistem Bilgisi");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+        if (msgObj instanceof Announcement) {
+            Announcement ann = (Announcement) msgObj;
+            alert.setContentText("Duyuru\nYazar: " + ann.getsomeAuthorName() + "\nTarih: " + ann.getsomeDate().format(dtf));
+        } else {
+            Comment comm = (Comment) msgObj;
+            alert.setContentText("Yorum\nYazar: " + comm.getAuthorName() + "\nTarih: " + comm.getDate().format(dtf));
+        }
+        alert.showAndWait();
+    }
+
+    private void checkPermissionsAndAddEditButton(VBox bubble, Object msgObj) {
+        if (msgObj instanceof Comment) {
+            Comment comm = (Comment) msgObj;
+            if (currentUser.getRole().equals("Editor") || comm.getAuthorId() == currentUser.getID()) {
+                Button editBtn = new Button("Düzenle");
+                editBtn.setStyle("-fx-font-size: 9;");
+                editBtn.setOnAction(e -> openEditDialog(comm));
+                bubble.getChildren().add(editBtn);
+            }
+        }
     }
 
     private void openEditDialog(Comment comm) {
         TextInputDialog dialog = new TextInputDialog(comm.getContent());
-        dialog.setTitle("Düzenle");
-        dialog.setHeaderText("Mesajınızı güncelleyin:");
         dialog.showAndWait().ifPresent(newText -> {
             comm.setContent(newText);
             DataStore.saveAll();
@@ -182,13 +223,8 @@ public class chatController {
         String fxml = currentUser.getRole().equals("Teacher") ? "mid2-view.fxml" : "mid1-view.fxml";
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
         Parent root = loader.load();
-
-        if(currentUser.getRole().equals("Teacher")) {
-            ((Mid2Controller)loader.getController()).setUser(currentUser);
-        } else {
-            ((Mid1Controller)loader.getController()).setUser(currentUser);
-        }
-
+        if(currentUser.getRole().equals("Teacher")) ((Mid2Controller)loader.getController()).setUser(currentUser);
+        else ((Mid1Controller)loader.getController()).setUser(currentUser);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();

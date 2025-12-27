@@ -17,11 +17,12 @@
             </HBox>
 
             <HBox spacing="10.0">
-                <TextArea fx:id="messageArea" prefHeight="60.0" promptText="Bir duyuru veya yorum yazın..." HBox.hgrow="ALWAYS" wrapText="true" />
+                <TextArea fx:id="messageArea" prefHeight="60.0" promptText="Bir duyuru veya yorum yazın... (Duyuru için başına ! koyun)" HBox.hgrow="ALWAYS" wrapText="true" />
                 <Button onAction="#handleSendMessage" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #e67e22;" text="Gönder" textFill="WHITE" />
             </HBox>
 
-            <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+            <ScrollPane fx:id="chatScrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                        style="-fx-background: transparent; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
                 <content>
                     <VBox fx:id="chatContainer" spacing="15.0" style="-fx-padding: 10;" />
                 </content>
