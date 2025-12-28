@@ -31,7 +31,7 @@ public class Comment implements Serializable {
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; } // Düzenleme için
     public String getAuthorName() { return authorName; }
-    public String getAnnouncementId() { return announcementId; }
+
     public LocalDateTime getDate() { return date; }
     public String getAuthorRole() { return authorRole; } //
     public int getAuthorId() { return authorId; } //

@@ -18,7 +18,4 @@ public class Teacher extends User  {
     public String toString() {
         return super.toString() + " [Hoca Uzmanlık: " + expertise + "]";
     }
-
-
-
 }

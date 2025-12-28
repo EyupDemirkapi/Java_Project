@@ -1,7 +1,5 @@
 package com.example.java_project;
 import javafx.scene.layout.GridPane;
-import javafx.geometry.Insets;
-// Eğer showAlert hata veriyorsa Alert sınıfı da eksik olabilir:
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;

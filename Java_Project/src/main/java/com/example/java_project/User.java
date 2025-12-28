@@ -32,7 +32,6 @@ public abstract class User implements Serializable {
     public void setEmail(String email) { this.email = email; }
 
     public int getID() { return id; }
-    public void setID(int id) { this.id = id; }
 
     public String getPassword() { return password; }
     public void setPassword(String password) {
@@ -43,8 +42,6 @@ public abstract class User implements Serializable {
             System.out.println("Hata: Şifre yetersiz, varsayılan atandı.");
         }
     }
-
-    public long getLastVisit() { return lastVisit; }
     public void setLastVisit(long lastVisit) { this.lastVisit = lastVisit; }
 
     @Override
