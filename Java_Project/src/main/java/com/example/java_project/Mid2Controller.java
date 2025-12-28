@@ -114,7 +114,7 @@ public class Mid2Controller {
     @FXML
     public void handleGoBack(ActionEvent event) {
         try {
-            // "main-view.fxml" yerine "login-view.fxml" yapıldı
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login-view.fxml"));
             Parent root = loader.load();
 
