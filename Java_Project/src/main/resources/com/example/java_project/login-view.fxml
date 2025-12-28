@@ -23,6 +23,9 @@
                         <Hyperlink style="-fx-font-size: 11;" text="Forgot Password?" textFill="#bb86fc" />
                     </HBox>
                     <Button onAction="#handleLogin" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #bb86fc; -fx-background-radius: 10; -fx-cursor: hand; -fx-text-fill: black; -fx-font-weight: bold;" text="Login" />
+
+                    <Button onAction="#handleResetSystem" prefHeight="30.0" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-color: #ff4444; -fx-border-radius: 10; -fx-text-fill: #ff4444; -fx-font-size: 10; -fx-cursor: hand;" text="SİSTEMİ SIFIRLA (Tüm Verileri Sil)" />
+
                     <Button onAction="#showSignUp" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-color: #bb86fc; -fx-border-radius: 10; -fx-cursor: hand;" text="Sign Up" textFill="#bb86fc" />
                 </children>
             </VBox>
