@@ -41,6 +41,6 @@
                 </children>
             </VBox>
         </StackPane>
-        <Label layoutX="203.0" layoutY="510.0" style="-fx-cursor: hand;" text="Help" textFill="#888888" underline="true" />
+        <Label fx:id="helpLabel" onMouseClicked="#showHelp" layoutX="203.0" layoutY="510.0" style="-fx-cursor: hand;" text="Help" textFill="#888888" underline="true" />
     </children>
 </AnchorPane>

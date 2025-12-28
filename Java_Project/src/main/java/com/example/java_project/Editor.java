@@ -1,6 +1,6 @@
 package com.example.java_project;
 
-public class Editor extends User implements IAnnouncer {
+public class Editor extends User  {
     private String expertise;
 
     public Editor() {
@@ -14,23 +14,6 @@ public class Editor extends User implements IAnnouncer {
     @Override
     public String getRole() {
         return "Editor";
-    }
-    // --- GETTER VE SETTER ---
-    public String getExpertise() { return expertise; }
-    public void setExpertise(String expertise) { this.expertise = expertise; }
-
-    @Override
-    public void postAnnouncement(Announcement announcement) {
-        // Duyuruyu merkezi veri deposuna ekle
-        DataStore.addAnnouncement(announcement);
-        System.out.println("Editör " + getName() + " yeni bir duyuru yayınladı.");
-    }
-
-    @Override
-    public void deleteAnnouncement(Announcement announcement) {
-        // Duyuruyu merkezi veri deposundan sil
-        DataStore.deleteAnnouncement(announcement);
-        System.out.println("Editör " + getName() + " duyuruyu sildi: " + announcement.getTitle());
     }
 
     @Override

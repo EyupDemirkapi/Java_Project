@@ -14,6 +14,11 @@
                 <Label fx:id="classNameLabel" text="Sınıf Duyuruları" textFill="#f1c40f">
                     <font><Font name="System Bold" size="20.0" /></font>
                 </Label>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Button onAction="#handleUpdateUserInfo" text="Profilimi Güncelle"
+                        style="-fx-background-color: #03dac6; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;" />
             </HBox>
 
             <HBox spacing="10.0" alignment="BOTTOM_CENTER" style="-fx-background-color: #1e1e1e; -fx-padding: 10; -fx-background-radius: 5;">

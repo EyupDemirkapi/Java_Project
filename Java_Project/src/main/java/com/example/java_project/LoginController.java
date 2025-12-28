@@ -131,7 +131,22 @@ public class LoginController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+    @FXML
+    private void showHelp() {
+        Alert helpAlert = new Alert(Alert.AlertType.INFORMATION);
+        helpAlert.setTitle("Destek ve İletişim");
+        helpAlert.setHeaderText("Sistem Yöneticileri");
 
+        // Mail adreslerini alt alta listeler
+        String contactInfo = "omeroduncu@marun.edu.tr\n" +
+                "emrearslan24@marun.edu.tr\n" +
+                "eyüpboncuk@marun.edu.tr";
+
+        helpAlert.setContentText(contactInfo);
+
+        // Pencere stilini arayüze uygun hale getirmek istersen (isteğe bağlı)
+        helpAlert.showAndWait();
+    }
     @FXML private void showSignUp() { loginPane.setVisible(false); loginPane.setManaged(false); signupPane.setVisible(true); signupPane.setManaged(true); }
     @FXML private void showLogin() { signupPane.setVisible(false); signupPane.setManaged(false); loginPane.setVisible(true); loginPane.setManaged(true); }
 }

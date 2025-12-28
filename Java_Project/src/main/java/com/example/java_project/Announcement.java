@@ -25,14 +25,14 @@ public class Announcement implements Serializable {
 
     // --- GETTER METODLARI ---
     public String getId() { return id; }
-    public String getTitle() { return title; }
+
     public String getsomeContent() { return content; }
     public String getsomeAuthorName() { return authorName; }
     public int getAuthorId() { return authorId; } // YENİ
     public LocalDateTime getsomeDate() { return date; }
 
     public void setsomeContent(String content) { this.content = content; }
-    public void setTitle(String title) { this.title = title; }
+
 
     @Override
     public String toString() {

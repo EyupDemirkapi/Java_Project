@@ -1,5 +1,11 @@
 package com.example.java_project;
-
+import javafx.scene.layout.GridPane;
+import javafx.geometry.Insets;
+// Eğer showAlert hata veriyorsa Alert sınıfı da eksik olabilir:
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -18,7 +24,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 public class chatController {
     @FXML private VBox chatContainer;
@@ -230,18 +236,109 @@ public class chatController {
 
     private void showDetailAlert(Object msgObj) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Detaylar");
+        alert.setTitle("Mesaj Detayları");
+        alert.setHeaderText(null);
+
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String detailText = "";
+
         if (msgObj instanceof Announcement) {
             Announcement ann = (Announcement) msgObj;
-            alert.setContentText("Duyuru\nYazar: " + ann.getsomeAuthorName() + "\nTarih: " + ann.getsomeDate().format(dtf));
+            // Duyuruyu yazan kullanıcıyı sistemden bulup mailini alıyoruz
+            User author = DataStore.getUsers().stream()
+                    .filter(u -> u.getID() == ann.getAuthorId())
+                    .findFirst().orElse(null);
+
+            String email = (author != null) ? author.getEmail() : "Bilinmiyor";
+
+            detailText = "--- DUYURU ---\n" +
+                    "Yazar: " + ann.getsomeAuthorName() + "\n" +
+                    "E-posta: " + email + "\n" + // Mail buraya eklendi
+                    "Tarih: " + ann.getsomeDate().format(dtf) + "\n" +
+                    "İçerik: " + ann.getsomeContent();
         } else {
             Comment comm = (Comment) msgObj;
-            alert.setContentText("Yorum\nYazar: " + comm.getAuthorName() + "\nTarih: " + comm.getDate().format(dtf));
+            // Yorumu yazan kullanıcıyı sistemden bulup mailini alıyoruz
+            User author = DataStore.getUsers().stream()
+                    .filter(u -> u.getID() == comm.getAuthorId())
+                    .findFirst().orElse(null);
+
+            String email = (author != null) ? author.getEmail() : "Bilinmiyor";
+
+            detailText = "--- YORUM ---\n" +
+                    "Yazar: " + comm.getAuthorName() + " [" + comm.getAuthorRole() + "]\n" +
+                    "E-posta: " + email + "\n" + // Mail buraya eklendi
+                    "Tarih: " + comm.getDate().format(dtf) + "\n" +
+                    "İçerik: " + comm.getContent();
         }
+
+        alert.setContentText(detailText);
         alert.showAndWait();
     }
+    @FXML
+    private void handleUpdateUserInfo() {
+        // 1. Özel bir Dialog penceresi oluşturuyoruz
+        Dialog<List<String>> dialog = new Dialog<>();
+        dialog.setTitle("Profilimi Güncelle");
+        dialog.setHeaderText("ID: " + currentUser.getID() + " - Bilgilerinizi Güncelleyin");
 
+        // 2. Butonları Ayarla (Tamam ve İptal)
+        ButtonType updateButtonType = new ButtonType("Güncelle", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        // 3. Giriş alanlarını oluştur (Layout)
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+
+        TextField emailField = new TextField(currentUser.getEmail());
+        emailField.setPromptText("Yeni E-posta");
+
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Yeni Şifre (Boş bırakılırsa değişmez)");
+
+        grid.add(new Label("E-posta:"), 0, 0);
+        grid.add(emailField, 1, 0);
+        grid.add(new Label("Yeni Şifre:"), 0, 1);
+        grid.add(passwordField, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // 4. Sonuçları listeye dönüştür
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == updateButtonType) {
+                List<String> results = new ArrayList<>();
+                results.add(emailField.getText());
+                results.add(passwordField.getText());
+                return results;
+            }
+            return null;
+        });
+
+        // 5. Verileri güncelle ve kaydet
+        dialog.showAndWait().ifPresent(results -> {
+            String newEmail = results.get(0);
+            String newPass = results.get(1);
+
+            if (!newEmail.isEmpty()) {
+                currentUser.setEmail(newEmail);
+            }
+
+            // Şifre alanı boş değilse ve en az 6 karakterse güncelle
+            if (!newPass.isEmpty()) {
+                if (newPass.length() >= 6) {
+                    currentUser.setPassword(newPass);
+                } else {
+                    showAlert(Alert.AlertType.WARNING, "Hata", "Şifre en az 6 karakter olmalıdır!");
+                    return;
+                }
+            }
+
+            DataStore.saveAll(); // Değişiklikleri users.dat dosyasına yazar
+            showAlert(Alert.AlertType.INFORMATION, "Başarılı", "Profiliniz güncellendi.");
+        });
+    }
     @FXML
     public void handleGoBack(ActionEvent event) throws IOException {
         String fxml = "Teacher".equalsIgnoreCase(currentUser.getRole()) ? "mid2-view.fxml" : "mid1-view.fxml";
@@ -252,5 +349,12 @@ public class chatController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
+    }
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

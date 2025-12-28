@@ -27,22 +27,7 @@ public class DataStore {
         }
     }
 
-    // GÖRSELDEKİ HATA ÇÖZÜMÜ: Duyuru Ekleme
-    public static void addAnnouncement(Announcement ann) {
-        announcements.add(ann);
-        saveAll();
-    }
 
-    // GÖRSELDEKİ HATA ÇÖZÜMÜ: Duyuru Silme
-    public static void deleteAnnouncement(Announcement ann) {
-        if (ann != null) {
-            // Önce bu duyuruya ait yorumları siliyoruz
-            comments.removeIf(c -> c.getAnnouncementId().equals(ann.getId()));
-            // Sonra duyuruyu siliyoruz
-            announcements.remove(ann);
-            saveAll();
-        }
-    }
 
     public static void saveAll() {
         FileHandler.saveList("users.dat", new ArrayList<>(users));
