@@ -253,34 +253,42 @@ public class chatController {
         alert.setHeaderText(null);
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        String detailText = "";
 
+        // Mesaj tipine göre yazar ID'sini alıyoruz
+        int authorId = (msgObj instanceof Announcement) ?
+                ((Announcement) msgObj).getAuthorId() :
+                ((Comment) msgObj).getAuthorId();
+
+        // Yazarı DataStore üzerinden buluyoruz
+        User author = DataStore.getUsers().stream()
+                .filter(u -> u.getID() == authorId)
+                .findFirst().orElse(null);
+
+        String email = (author != null) ? author.getEmail() : "Bilinmiyor";
+        String extraInfo = "";
+
+        // --- SADECE ÖĞRENCİ İÇİN AKADEMİK YIL KONTROLÜ ---
+        if (author instanceof Student) {
+            Student s = (Student) author;
+            // Teacher/getTitle hatasını önlemek için burayı sadece öğrenciye odakladık
+            extraInfo = "\nAkademik Yıl: " + s.getAcademicYear();
+        }
+
+        String detailText;
         if (msgObj instanceof Announcement) {
             Announcement ann = (Announcement) msgObj;
-            // Duyuruyu yazan kullanıcıyı sistemden bulup mailini alıyoruz
-            User author = DataStore.getUsers().stream()
-                    .filter(u -> u.getID() == ann.getAuthorId())
-                    .findFirst().orElse(null);
-
-            String email = (author != null) ? author.getEmail() : "Bilinmiyor";
-
             detailText = "--- DUYURU ---\n" +
                     "Yazar: " + ann.getsomeAuthorName() + "\n" +
-                    "E-posta: " + email + "\n" + // Mail buraya eklendi
+                    "E-posta: " + email +
+                    extraInfo + "\n" + // Öğrenciyse akademik yıl satırı buraya eklenir
                     "Tarih: " + ann.getsomeDate().format(dtf) + "\n" +
                     "İçerik: " + ann.getsomeContent();
         } else {
             Comment comm = (Comment) msgObj;
-            // Yorumu yazan kullanıcıyı sistemden bulup mailini alıyoruz
-            User author = DataStore.getUsers().stream()
-                    .filter(u -> u.getID() == comm.getAuthorId())
-                    .findFirst().orElse(null);
-
-            String email = (author != null) ? author.getEmail() : "Bilinmiyor";
-
             detailText = "--- YORUM ---\n" +
                     "Yazar: " + comm.getAuthorName() + " [" + comm.getAuthorRole() + "]\n" +
-                    "E-posta: " + email + "\n" + // Mail buraya eklendi
+                    "E-posta: " + email +
+                    extraInfo + "\n" + // Öğrenciyse akademik yıl satırı buraya eklenir
                     "Tarih: " + comm.getDate().format(dtf) + "\n" +
                     "İçerik: " + comm.getContent();
         }
