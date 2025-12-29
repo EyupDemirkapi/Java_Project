@@ -155,29 +155,44 @@ public class chatController {
         List<String> choices = new ArrayList<>();
         choices.add("Detayları Gör");
 
-        boolean isAuthorized = false;
+        boolean canEdit = false;
+        boolean canDelete = false;
         String role = currentUser.getRole();
+        int msgAuthorId;
 
+        // Mesajın yazar ID'sini tespit et
         if (msgObj instanceof Comment) {
-            Comment c = (Comment) msgObj;
-            // Kendi mesajı VEYA Editor VEYA Teacher ise tam yetkili
-            if (currentUser.getID() == c.getAuthorId() || "Editor".equalsIgnoreCase(role) || "Teacher".equalsIgnoreCase(role)) {
-                isAuthorized = true;
-            }
-        } else if (msgObj instanceof Announcement) {
-            // Duyuruları sadece Editor ve Teacher silebilir/düzenleyebilir
-            if ("Editor".equalsIgnoreCase(role) || "Teacher".equalsIgnoreCase(role)) {
-                isAuthorized = true;
-            }
+            msgAuthorId = ((Comment) msgObj).getAuthorId();
+        } else {
+            msgAuthorId = ((Announcement) msgObj).getAuthorId();
         }
 
-        if (isAuthorized) {
+        // --- YETKİ KONTROLÜ (GÜNCELLENDİ) ---
+
+        // KURAL 1: Eğer işlemi yapan kişi EDİTÖR ise, herkesin mesajı üzerinde TAM YETKİYE sahiptir.
+        if ("Editor".equalsIgnoreCase(role)) {
+            canEdit = true;
+            canDelete = true;
+        }
+        // KURAL 2: Eğer işlemi yapan kişi Editör değilse, sadece KENDİ mesajını düzenleyip silebilir.
+        else if (currentUser.getID() == msgAuthorId) {
+            canEdit = true;
+            canDelete = true;
+        }
+
+        // Seçenekleri listeye ekle
+        if (canEdit) {
             choices.add("Mesajı Düzenle");
+        }
+        if (canDelete) {
             choices.add("Mesajı Sil");
         }
 
+        // Dialog penceresini göster
         ChoiceDialog<String> dialog = new ChoiceDialog<>("Detayları Gör", choices);
         dialog.setTitle("İşlem Menüsü");
+        dialog.setHeaderText("Mesaj üzerinde işlem yapın:");
+
         dialog.showAndWait().ifPresent(choice -> {
             if (choice.equals("Mesajı Düzenle")) openEditDialog(msgObj);
             else if (choice.equals("Mesajı Sil")) confirmAndDelete(msgObj);
