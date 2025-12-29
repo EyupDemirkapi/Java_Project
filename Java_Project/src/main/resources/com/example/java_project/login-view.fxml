@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="550.0" prefWidth="437.0" style="-fx-background-color: #121212; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.java_project.LoginController">
@@ -20,7 +31,7 @@
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <CheckBox style="-fx-font-size: 11;" text="Remember me" textFill="#888888" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Hyperlink style="-fx-font-size: 11;" text="Forgot Password?" textFill="#bb86fc" />
+                        <Hyperlink onAction="#handleForgotPassword" style="-fx-font-size: 11;" text="Forgot Password?" textFill="#bb86fc" />
                     </HBox>
                     <Button onAction="#handleLogin" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #bb86fc; -fx-background-radius: 10; -fx-cursor: hand; -fx-text-fill: black; -fx-font-weight: bold;" text="Login" />
 
@@ -41,6 +52,6 @@
                 </children>
             </VBox>
         </StackPane>
-        <Label fx:id="helpLabel" onMouseClicked="#showHelp" layoutX="203.0" layoutY="510.0" style="-fx-cursor: hand;" text="Help" textFill="#888888" underline="true" />
+        <Label fx:id="helpLabel" layoutX="203.0" layoutY="510.0" onMouseClicked="#showHelp" style="-fx-cursor: hand;" text="Help" textFill="#888888" underline="true" />
     </children>
 </AnchorPane>

@@ -10,7 +10,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
-
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
+import java.util.Properties;
 public class LoginController {
     @FXML private TextField idField;
     @FXML private PasswordField passwordField;
@@ -21,9 +23,83 @@ public class LoginController {
     @FXML private TextField newEmail;
     @FXML private PasswordField newPass;
 
+
+    public class MailService {
+        public static void sendResetMail(String recipientEmail, String newPassword) {
+            final String username = "senin_mailin@gmail.com";
+            final String password = "uygulama_sifren"; // Gmail App Password
+
+            Properties prop = new Properties();
+            prop.put("mail.smtp.host", "smtp.gmail.com");
+            prop.put("mail.smtp.port", "587");
+            prop.put("mail.smtp.auth", "true");
+            prop.put("mail.smtp.starttls.enable", "true");
+
+            Session session = Session.getInstance(prop, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
+
+            try {
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(username));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+                message.setSubject("Şifre Sıfırlama Talebi");
+                message.setText("Merhaba, yeni geçici şifreniz: " + newPassword + "\nLütfen giriş yaptıktan sonra şifrenizi değiştirin.");
+
+                Transport.send(message);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    @FXML
+    private void handleForgotPassword() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Şifre Sıfırlama");
+        dialog.setHeaderText("Kayıtlı E-posta adresinizi girin:");
+        dialog.setContentText("Email:");
+
+        dialog.showAndWait().ifPresent(email -> {
+            // 1. Sistemde bu maile sahip kullanıcıyı bul
+            User foundUser = DataStore.getUsers().stream()
+                    .filter(u -> u.getEmail().equalsIgnoreCase(email))
+                    .findFirst().orElse(null);
+
+            if (foundUser != null) {
+                // 2. Yeni bir geçici şifre oluştur
+                String tempPass = "Temp" + (int)(Math.random() * 9000 + 1000);
+                foundUser.setPassword(tempPass);
+                DataStore.saveAll();
+
+                // 3. Mail gönder (Ayrı bir thread'de yapılması donmayı engeller)
+                new Thread(() -> {
+                    MailService.sendResetMail(email, tempPass);
+                }).start();
+
+                showAlert(Alert.AlertType.INFORMATION, "Başarılı", "Yeni şifreniz mail adresinize gönderildi.");
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Hata", "Bu e-posta adresi sistemde kayıtlı değil!");
+            }
+        });
+    }
     @FXML
     public void initialize() {
-        // Rolleri doldur
+      
+        if(roleCombo != null) {
+            roleCombo.getItems().setAll("Student", "Teacher", "Editor");
+
+            // --- RENK GÜNCELLEMESİ ---
+            // Arka planı daha açık bir gri (#b0bec5) veya beyazımsı yapalım
+            roleCombo.setStyle(
+                    "-fx-background-color: #cfd8dc; " + // Açık gümüş/mavi gri tonu
+                            "-fx-text-fill: black; " +
+                            "-fx-font-weight: bold; " +
+                            "-fx-background-radius: 5;"
+            );
+        }
         if(roleCombo != null) {
             roleCombo.getItems().setAll("Student", "Teacher", "Editor");
         }

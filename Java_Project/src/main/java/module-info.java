@@ -4,6 +4,8 @@ module com.example.java_project {
     requires javafx.base;
     requires java.desktop;
 
+    // E-posta gönderimi için gerekli olan modül
+    requires jakarta.mail;
 
     opens com.example.java_project to javafx.fxml;
     exports com.example.java_project;
