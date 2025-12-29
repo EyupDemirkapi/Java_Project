@@ -9,8 +9,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class Mid1Controller {
@@ -27,16 +27,15 @@ public class Mid1Controller {
                 "Hazırlık", "1. Sınıf", "2. Sınıf", "3. Sınıf", "4. Sınıf", "Mezun"
         ));
 
-        // --- TEMA GÜNCELLEMESİ: ComboBox'ı Turkuaz ve Açık Renk Yapma ---
+        // ComboBox Görsel Stili
         academicYearCombo.setStyle(
-                "-fx-background-color: #03dac6; " +  // Butonla aynı turkuaz renk
-                        "-fx-text-fill: black; " +           // Seçili metin siyah
-                        "-fx-font-weight: bold; " +          // Kalın yazı
-                        "-fx-background-radius: 5; " +       // Köşe yumuşatma
-                        "-fx-cursor: hand;"                  // El imleci
+                "-fx-background-color: #03dac6; " +
+                        "-fx-text-fill: black; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-background-radius: 5; " +
+                        "-fx-cursor: hand;"
         );
 
-        // Açılır menüdeki yazıların siyah ve okunaklı olması için cell factory ekliyoruz
         academicYearCombo.setButtonCell(new ListCell<String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -51,45 +50,94 @@ public class Mid1Controller {
             }
         });
 
-        // 2. Sınıf Listesi Tıklama Listener'ı
-        classListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                try {
-                    String classId = "";
-                    if (newVal.contains("(Kod: ")) {
-                        int startIndex = newVal.lastIndexOf("(Kod: ") + 6;
-                        int endIndex = newVal.lastIndexOf(")");
-                        classId = newVal.substring(startIndex, endIndex).trim();
-                    }
+        // 2. Sağ Tık Menüsünü Hazırla
+        setupContextMenu();
 
-                    Classroom selected = null;
-                    for (Classroom c : DataStore.classrooms) {
-                        if (c.getClassId().equals(classId)) {
-                            selected = c;
-                            break;
-                        }
-                    }
+        // 3. TIKLAMA AYRIMI: Sol tık chat açar, sağ tık sadece menüyü gösterir
+        classListView.setOnMouseClicked(event -> {
+            // Sadece farenin SOL tuşuyla tıklandığında (PRIMARY) chat'e gider
+            if (event.getButton() == MouseButton.PRIMARY) {
+                String selected = classListView.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    openChat(selected);
+                }
+            }
+            // Sağ tıklandığında (SECONDARY) bu blok çalışmaz, sadece ContextMenu görünür.
+        });
+    }
 
-                    if (selected != null) {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("chat-view.fxml"));
-                        Parent root = loader.load();
-                        chatController controller = loader.getController();
-                        controller.setChatData(currentUser, selected);
-                        Stage stage = (Stage) classListView.getScene().getWindow();
-                        stage.setScene(new Scene(root));
-                        stage.show();
+    private void setupContextMenu() {
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem deleteItem = new MenuItem("Sınıfı Sil / Ayrıl");
+        deleteItem.setStyle("-fx-text-fill: red;");
+
+        deleteItem.setOnAction(e -> {
+            String selected = classListView.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                handleDeleteClass(selected);
+            }
+        });
+
+        contextMenu.getItems().add(deleteItem);
+        classListView.setContextMenu(contextMenu);
+    }
+
+    private void handleDeleteClass(String selectedItem) {
+        String classId = extractId(selectedItem);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Sınıftan ayrılmak istediğinize emin misiniz?", ButtonType.YES, ButtonType.NO);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                for (Classroom c : DataStore.classrooms) {
+                    if (c.getClassId().equals(classId)) {
+                        c.getStudentIds().remove(Integer.valueOf(currentUser.getID()));
+                        DataStore.saveAll();
+                        refreshClassList();
+                        break;
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
         });
     }
 
+    private String extractId(String text) {
+        if (text != null && text.contains("(Kod: ")) {
+            int startIndex = text.lastIndexOf("(Kod: ") + 6;
+            int endIndex = text.lastIndexOf(")");
+            return text.substring(startIndex, endIndex).trim();
+        }
+        return "";
+    }
+
+    private void openChat(String newVal) {
+        try {
+            String classId = extractId(newVal);
+            Classroom selected = null;
+            for (Classroom c : DataStore.classrooms) {
+                if (c.getClassId().equals(classId)) {
+                    selected = c;
+                    break;
+                }
+            }
+            if (selected != null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("chat-view.fxml"));
+                Parent root = loader.load();
+                chatController controller = loader.getController();
+                controller.setChatData(currentUser, selected);
+
+                Stage stage = (Stage) classListView.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.setMaximized(true); // Tam ekran geçişi
+                stage.show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setUser(User user) {
         this.currentUser = user;
         refreshClassList();
-
         if (currentUser instanceof Student) {
             academicYearCombo.setValue(((Student) currentUser).getAcademicYear());
         }
@@ -121,20 +169,25 @@ public class Mid1Controller {
     @FXML
     private void handleJoinClass() {
         String code = classCodeField.getText().trim().toUpperCase();
+        if (code.isEmpty()) return;
+
         boolean found = false;
         for (Classroom c : DataStore.classrooms) {
             if (c.getClassId().equals(code)) {
-                c.addStudent(currentUser.getID());
-                DataStore.saveAll();
+                if (!c.getStudentIds().contains(currentUser.getID())) {
+                    c.addStudent(currentUser.getID());
+                    DataStore.saveAll();
+                    refreshClassList();
+                    classCodeField.clear();
+                    showAlert("Başarılı", "Sınıfa başarıyla katıldınız!");
+                } else {
+                    showAlert("Uyarı", "Bu sınıfa zaten kayıtlısınız.");
+                }
                 found = true;
                 break;
             }
         }
-        if (found) {
-            showAlert("Başarılı", "Sınıfa başarıyla katıldınız!");
-            refreshClassList();
-            classCodeField.clear();
-        } else {
+        if (!found) {
             showAlert("Hata", "Geçersiz sınıf kodu!");
         }
     }
