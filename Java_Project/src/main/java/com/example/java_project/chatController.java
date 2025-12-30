@@ -65,7 +65,7 @@ public class chatController {
             typeComboBox.setVisible(true);
             typeComboBox.setManaged(true);
 
-            // Debug için konsola çıktı alalım (Sorun devam ederse buradan kontrol edebilirsin)
+
             System.out.println("Yetkili Girişi: " + currentUser.getName() + " - Rol: " + role);
         } else {
             // Sadece Öğrenci ise ComboBox'ı tamamen gizle
@@ -180,7 +180,7 @@ public class chatController {
             canDelete = true;
         }
 
-        // Seçenekleri listeye ekle
+        // Seçenekleri listeye ekleme
         if (canEdit) {
             choices.add("Mesajı Düzenle");
         }
@@ -220,7 +220,7 @@ public class chatController {
         refreshChat();
     }
 
-    // --- DİĞER YARDIMCI METODLAR (openEditDialog, confirmAndDelete, showDetailAlert aynı kalabilir) ---
+    // --- DİĞER YARDIMCI METODLAR (openEditDialog, confirmAndDelete, showDetailAlert ...) ---
     private void openEditDialog(Object msgObj) {
         String currentContent = (msgObj instanceof Announcement) ? ((Announcement) msgObj).getsomeContent() : ((Comment) msgObj).getContent();
         TextInputDialog dialog = new TextInputDialog(currentContent);
@@ -307,7 +307,7 @@ public class chatController {
         ButtonType updateButtonType = new ButtonType("Güncelle", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
 
-        // 3. Giriş alanlarını oluştur (Layout)
+
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);

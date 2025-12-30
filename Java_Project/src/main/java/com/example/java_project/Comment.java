@@ -33,6 +33,6 @@ public class Comment implements Serializable {
     public String getAuthorName() { return authorName; }
 
     public LocalDateTime getDate() { return date; }
-    public String getAuthorRole() { return authorRole; } //
-    public int getAuthorId() { return authorId; } //
+    public String getAuthorRole() { return authorRole; }
+    public int getAuthorId() { return authorId; }
 }

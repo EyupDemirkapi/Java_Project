@@ -104,7 +104,7 @@ public class Mid2Controller {
                     } catch (IOException e) { e.printStackTrace(); }
                 }
             }
-            // Sağ tıklandığında bu blok çalışmaz, sadece ContextMenu görünür.
+            // Sağ tıklandığımızda bu blok çalışmaz, sadece ContextMenu görünür.
         });
     }
 

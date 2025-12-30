@@ -11,7 +11,7 @@ public class Announcement implements Serializable {
     private String title;
     private String content;
     private String authorName;
-    private int authorId; // YENİ: Sağa/Sola yaslama kontrolü için eklendi
+    private int authorId;
     private LocalDateTime date;
 
     public Announcement(String title, String content, String authorName, int authorId) {
