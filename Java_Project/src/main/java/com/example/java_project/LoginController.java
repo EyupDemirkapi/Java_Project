@@ -162,7 +162,7 @@ public class LoginController {
 
     @FXML
     private void showHelp() {
-        showAlert(Alert.AlertType.INFORMATION, "Yardım", "Yöneticiler: omeroduncu@marun.edu.tr\nemrearslan24@marun.edu.tr");
+        showAlert(Alert.AlertType.INFORMATION, "Yardım", "Yöneticiler: omeroduncu@marun.edu.tr\nemrearslan24@marun.edu.tr\neyupdemirkapi@marun.edu.tr\nyagmurbozkurt@marun.edu.tr");
     }
 
     private void showAlert(Alert.AlertType type, String title, String content) {
